@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nhân dịp ngày siêu cute - 20/10 💕</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Pacifico&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: radial-gradient(circle at center, #2c1626 0%, #120911 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            color: #fff;
+        }
+
+        /* Canvas nền cho pháo hoa/trái tim rơi toàn màn hình */
+        #bg-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Khung thiệp chính */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 50px 40px;
+            border-radius: 30px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            max-width: 520px;
+            width: 90%;
+            z-index: 10;
+            position: relative;
+            animation: cardFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes cardFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+            color: white;
+            padding: 6px 18px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 50px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(255, 117, 140, 0.4);
+        }
+
+        h1 {
+            font-family: 'Pacifico', cursive;
+            font-size: 38px;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+
+        p {
+            color: #e0d1dc;
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        /* Nút bấm xịn */
+        .btn-magic {
+            background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(255, 117, 140, 0.5);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-magic:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 12px 30px rgba(255, 117, 140, 0.7);
+        }
+
+        .surprise-box {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.6s ease, opacity 0.6s ease;
+            opacity: 0;
+            margin-top: 0;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 0 20px;
+        }
+
+        .surprise-box.show {
+            max-height: 200px;
+            opacity: 1;
+            margin-top: 25px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .surprise-box p {
+            color: #fff6fb;
+            font-size: 15px;
+            margin-bottom: 0;
+        }
+        .cursor-particle {
+            position: absolute;
+            pointer-events: none;
+            font-size: 18px;
+            animation: particleAnim 0.8s forwards linear;
+            z-index: 999;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes particleAnim {
+            0% {
+                transform: translate(-50%, -50%) scale(0.6) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, calc(-50% - 60px)) scale(1.4) rotate(45deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Canvas cho hiệu ứng nền toàn màn hình -->
+    <canvas id="bg-canvas"></canvas>
+
+    <div class="glass-card">
+        <div class="badge">20 Tháng 10</div>
+        <h1>Gửi mẹ, Dương</h1>
+        
+        </p>
+        
+        <button class="btn-magic" onclick="revealSurprise()">Bấm zô đây iiiiii :3></button>
+        
+        <div class="surprise-box" id="surprise">
+            <p>💖 Chúc mẹ và em không chỉ riêng ngày 20/10 mà 365 ngày trong năm đều luôn hạnh phúc, xinh đẹp và gặp toàn chuyện như ý muốn! Thế giới này thật tuyệt vì có sự hiện diện của hai người phụ nữ nhà ta kkkkkkk! 🥰</p>
+        </div>
+    </div>
+
+    <script>
+        /* 1. Hiệu ứng chuột di chuyển đến đâu hoa & trái tim bay theo đến đó */
+        const symbols = ['🌸', '💖', '✨', '🌷', '💕', '🌺'];
+        let lastTime = 0;
+
+        window.addEventListener('mousemove', (e) => {
+            const currentTime = Date.now();
+            // Giới hạn tần suất tạo icon để mượt mà, không bị lag DOM
+            if (currentTime - lastTime > 50) { 
+                lastTime = currentTime;
+                createParticle(e.pageX, e.pageY);
+            }
+        });
+
+        function createParticle(x, y) {
+            const particle = document.createElement('div');
+            particle.classList.add('cursor-particle');
+            particle.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+            
+            // Random lệch vị trí chuột một chút cho tự nhiên
+            const offsetX = (Math.random() - 0.5) * 30;
+            const offsetY = (Math.random() - 0.5) * 30;
+            
+            particle.style.left = (x + offsetX) + 'px';
+            particle.style.top = (y + offsetY) + 'px';
+            
+            document.body.appendChild(particle);
+
+            setTimeout(() => {
+                particle.remove();
+            }, 800);
+        }
+
+        /* 2. Hiệu ứng mở hộp quà mượt mà */
+        function revealSurprise() {
+            const box = document.getElementById('surprise');
+            box.classList.toggle('show');
+        }
+
+        /* 3. Hiệu ứng hạt rơi toàn màn hình (Background Canvas) */
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        const particlesArray = [];
+        const numberOfParticles = 35;
+
+        class RainParticle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height - canvas.height;
+                this.size = Math.random() * 14 + 10;
+                this.speedY = Math.random() * 1 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 1;
+                this.char = symbols[Math.floor(Math.random() * symbols.length)];
+                this.opacity = Math.random() * 0.5 + 0.3;
+            }
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX;
+                if (this.y > canvas.height) {
+                    this.y = -20;
+                    this.x = Math.random() * canvas.width;
+                }
+            }
+            draw() {
+                ctx.globalAlpha = this.opacity;
+                ctx.font = `${this.size}px serif`;
+                ctx.fillText(this.char, this.x, this.y);
+            }
+        }
+
+        for (let i = 0; i < numberOfParticles; i++) {
+            particlesArray.push(new RainParticle());
+        }
+
+        function animateRain() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particlesArray.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateRain);
+        }
+        animateRain();
+    </script>
+</body>
+</html>
